@@ -11,12 +11,12 @@ Finora combines a dark fintech aesthetic with bold colors, data visualization, a
 ## Preview
 
 <p align="center">
-  <img src="<img width="1366" height="768" alt="Screenshot (169)" src="https://github.com/user-attachments/assets/e93becdc-e544-49f1-81e6-ce63e959131c" />
-" width="100%" alt="Finora Personal Finance Dashboard">
-  <img src="<img width="1366" height="768" alt="Screenshot (170)" src="https://github.com/user-attachments/assets/36d6f4ab-1472-45b1-a2ea-c299557c70c1" />
-" width="100%" alt="Finora Personal Finance analysis">
+  <img src="Screenshot%20(169).png" width="100%" alt="Finora Dashboard">
 </p>
 
+<p align="center">
+  <img src="Screenshot%20(170).png" width="100%" alt="Finora Analytics">
+</p>
 
 
 ---
