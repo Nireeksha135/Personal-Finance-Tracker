@@ -1,185 +1,225 @@
-Finora — Personal Finance Dashboard
+# Finora — Personal Finance Dashboard
 
-A modern personal finance dashboard focused on frontend development, UI design, and interactive user experience.
+A modern and interactive **Personal Finance Dashboard** designed to explore creative approaches to financial interfaces through frontend development and UI/UX design.
 
-Finora explores a more expressive approach to financial interfaces — combining a dark editorial aesthetic with bold accent colors, motion, data visualization, and micro-interactions.
+Finora combines a dark fintech aesthetic with bold colors, data visualization, animations, and micro-interactions to create a dashboard that feels expressive while keeping financial information clear and easy to understand.
 
-This project is a frontend/UI showcase. The financial data displayed in the interface is mock data and the application is not intended for real financial management.
+> **Note:** This project was created as a frontend and UI/UX showcase. All financial information displayed is mock data.
 
-Preview
+---
 
-Finora is designed around a dark charcoal interface with bright lime, cyan, pink, and orange accents.
+## Preview
 
-The goal was to move away from conventional finance dashboards and create something that feels more visually distinctive while keeping financial information easy to scan.
+<p align="center">
+  <img src="assets/finora-preview.png" width="100%" alt="Finora Personal Finance Dashboard">
+</p>
 
-Features
-Interactive finance dashboard
-Responsive top navigation
-Income, expense, savings, and balance overview
-Cash-flow visualization
-Spending category visualization
-Budget progress tracking
-Transaction history
-Add Transaction modal
-Analytics section
-Settings interface
-Animated financial ticker
-Animated charts and progress indicators
-Interactive hover states
-Cursor glow effect
-Moving decorative elements
-Responsive layout
-Toast notifications
-Smooth page transitions
-Design Direction
+> Add a screenshot of the dashboard to `assets/finora-preview.png` to display it here.
 
-The interface follows a dark experimental fintech aesthetic.
+---
 
-Instead of relying on traditional white cards and standard dashboard layouts, Finora uses:
+## Tech Stack
 
-Near-black and charcoal surfaces
-Acid-lime primary accents
-Cyan, pink, and orange secondary accents
-Oversized editorial typography
-Rounded modular components
-Subtle grid and grain textures
-Abstract geometric elements
-Motion and micro-interactions
-High-contrast financial data
-Minimal iconography
+![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
+![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JAVASCRIPT-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
+![Responsive Design](https://img.shields.io/badge/RESPONSIVE_DESIGN-111111?style=for-the-badge)
+![UI/UX](https://img.shields.io/badge/UI%2FUX-FF5CA8?style=for-the-badge)
 
-The visual system is intended to make the dashboard feel energetic without compromising readability.
+---
 
-Dashboard Sections
-Overview
+## Features
 
-Provides a quick snapshot of:
+### Dashboard Overview
 
-Total balance
-Monthly income
-Monthly expenses
-Savings
-Cash flow
-Spending distribution
-Recent transactions
-Transactions
+A centralized financial dashboard displaying:
 
-A dedicated interface for viewing financial activity and adding new transactions.
+- Total balance
+- Monthly income
+- Monthly expenses
+- Savings
+- Cash flow
+- Spending distribution
+- Recent transactions
 
-Budgets
+### Financial Visualizations
 
-Visual budget tracking using animated progress indicators across categories such as food, shopping, transportation, and entertainment.
+Finora uses custom visual components to make financial data easier to understand.
 
-Analytics
+- Animated cash-flow bar graph
+- Spending distribution chart
+- Budget progress indicators
+- Financial metric cards
+- Savings insights
 
-Highlights financial patterns including savings rate, average monthly spending, largest spending category, and overall cash flow.
+### Transaction Management
 
-Settings
+The **Add Transaction** interface allows users to enter:
 
-A simple interface for personalizing display information, currency, and savings goals.
+- Transaction type
+- Amount
+- Description
+- Category
+- Date
 
-Interactions
+New transactions are dynamically inserted into the dashboard using JavaScript.
 
-Finora includes several small interactions to make the interface feel more dynamic:
+### Budget Tracking
 
-Add Transaction
+Dedicated budget cards provide visual spending progress across categories including:
 
-Opens an interactive modal where users can enter a transaction type, amount, description, category, and date.
+`Food` · `Shopping` · `Transportation` · `Entertainment`
 
-Dynamic Charts
+### Analytics
 
-Changing the chart period triggers an animated update of the cash-flow visualization.
+The analytics interface highlights useful financial patterns including:
 
-Navigation
+- Savings rate
+- Average monthly spending
+- Largest expense category
+- Overall cash flow
 
-The top navigation switches between dashboard sections without reloading the page.
+---
 
-Micro-interactions
+## UI / UX
 
-Buttons, cards, charts, navigation elements, and transactions respond to hover and user interaction.
+The main focus of Finora is its interface design.
 
-Ambient Motion
+Instead of using a conventional light finance dashboard, the project explores a more experimental **dark fintech visual language**.
 
-Background geometry, ticker content, graph animations, progress indicators, and cursor lighting add subtle movement throughout the interface.
+### Design System
 
-Built With
-HTML5
-CSS3
-Vanilla JavaScript
+| Element | Direction |
+|---|---|
+| Background | Black / Charcoal |
+| Primary Accent | Acid Lime |
+| Secondary Accents | Cyan, Pink & Orange |
+| Typography | Bold Editorial |
+| Components | Rounded Modular Cards |
+| Navigation | Top Navigation |
+| Visual Style | Modern Fintech / Experimental |
+| Motion | Subtle & Interactive |
 
-No frontend frameworks or UI libraries were used.
+The interface also includes:
 
-The project is intentionally built using core web technologies to demonstrate frontend fundamentals, CSS styling, responsive layouts, animations, DOM manipulation, and interaction design.
+- Animated background geometry
+- Moving financial ticker
+- Cursor-following glow
+- Hover interactions
+- Animated charts
+- Smooth page transitions
+- Modal animations
+- Toast notifications
+- Responsive layouts
+- Subtle grain and grid textures
 
-Project Structure
-finora/
+---
+
+## Interactions
+
+The project includes functional frontend interactions using **Vanilla JavaScript**.
+
+```text
+Top Navigation       → Switch between dashboard sections
+Add Transaction      → Opens transaction modal
+Submit Transaction   → Dynamically adds transaction
+Chart Period          → Updates graph visualization
+View All              → Opens transaction view
+Settings              → Displays confirmation feedback
+Notifications         → Interactive toast feedback
+Cursor Movement       → Controls ambient glow effect
+```
+
+---
+
+## Project Structure
+
+```text
+Finora/
+│
+├── assets/
+│   └── finora-preview.png
 │
 ├── index.html
+│
 └── README.md
+```
 
-The entire interface currently lives inside a single HTML file containing the HTML structure, CSS styling, and JavaScript interactions.
+The current version intentionally keeps the interface inside a single `index.html` file containing the HTML structure, CSS styling, animations, and JavaScript interactions.
 
-This keeps the repository lightweight and makes the UI easy to preview or experiment with.
+---
 
-UI Highlights
-Visual Design
+## Frontend Concepts Demonstrated
 
-Custom dark fintech interface with a high-contrast color system and unconventional dashboard styling.
+![Responsive UI](https://img.shields.io/badge/RESPONSIVE_UI-C7FF4A?style=flat-square&logoColor=black)
+![CSS Animation](https://img.shields.io/badge/CSS_ANIMATION-54E8FF?style=flat-square&logoColor=black)
+![DOM Manipulation](https://img.shields.io/badge/DOM_MANIPULATION-FF9C44?style=flat-square&logoColor=white)
+![Micro Interactions](https://img.shields.io/badge/MICRO_INTERACTIONS-FF5CA8?style=flat-square&logoColor=white)
+![Data Visualization](https://img.shields.io/badge/DATA_VISUALIZATION-9C7CFF?style=flat-square&logoColor=white)
+![UI Design](https://img.shields.io/badge/UI_DESIGN-111111?style=flat-square&logoColor=white)
 
-Responsive Design
+This project demonstrates practical understanding of:
 
-Layouts adapt across desktop, tablet, and smaller screen sizes.
+- Semantic HTML structure
+- CSS Grid and Flexbox
+- Responsive web design
+- CSS variables
+- Keyframe animations
+- Micro-interactions
+- DOM manipulation
+- Event handling
+- Dynamic UI updates
+- Modal interfaces
+- Data visualization
+- Visual hierarchy
+- Dashboard UX
 
-CSS Animation
+---
 
-Animations are used for charts, progress indicators, decorative objects, transitions, and interface feedback.
+## Design Goal
 
-Data Visualization
+The goal of Finora wasn't to build another generic finance dashboard.
 
-Financial information is represented through bar charts, category distributions, progress bars, metric cards, and transaction summaries.
+The project explores how **motion, typography, color, visual hierarchy, and interaction design** can make traditionally data-heavy financial interfaces feel more engaging without sacrificing usability.
 
-Interaction Design
+The focus was primarily on:
 
-Micro-interactions provide feedback without overwhelming the primary financial information.
+**UI Design · UX Thinking · Frontend Development · Interaction Design · Responsive Design**
 
-Purpose
+---
 
-Finora was created as a frontend and UI/UX portfolio project.
+## Future Improvements
 
-The project focuses primarily on demonstrating:
+```text
+◦ Interactive line and area charts
+◦ Savings goal visualization
+◦ Advanced transaction filtering
+◦ Search functionality
+◦ Theme customization
+◦ Persistent transaction data
+◦ Improved mobile navigation
+◦ Accessibility improvements
+◦ Backend and API integration
+```
 
-UI design
-Visual hierarchy
-Frontend development
-Responsive design
-CSS architecture
-Animation
-Micro-interactions
-Dashboard design
-Data visualization
-User experience thinking
+---
 
-It is not intended to function as a complete banking or financial management platform.
+## Author
 
-Future Improvements
+### Nireeksha K R
 
-Some ideas for expanding the project:
+Computer Science & Design Engineering student with an interest in building thoughtful digital experiences through **UI/UX design and software development**.
 
-Animated line and area charts
-Interactive savings goals
-Custom payment card interface
-Transaction search and filtering
-Advanced financial analytics
-Theme customization
-Improved mobile navigation
-Persistent transaction data
-Backend/API integration
-Authentication
-Accessibility improvements
-Author
+![UI UX](https://img.shields.io/badge/UI%2FUX_DESIGN-FF5CA8?style=for-the-badge)
+![Frontend](https://img.shields.io/badge/FRONTEND_DEVELOPMENT-54E8FF?style=for-the-badge&logoColor=black)
+![Web Development](https://img.shields.io/badge/WEB_DEVELOPMENT-C7FF4A?style=for-the-badge&logoColor=black)
 
-Nireeksha K R
+---
 
-Computer Science & Design student focused on UI/UX design and frontend development.
+<p align="center">
+  <b>Designed & Developed by Nireeksha K R</b>
+</p>
 
-Designed and developed as a frontend/UI exploration.
+<p align="center">
+  A frontend exploration of modern financial interfaces.
+</p>
