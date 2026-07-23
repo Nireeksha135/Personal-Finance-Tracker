@@ -17,7 +17,7 @@ Finora combines a dark fintech aesthetic with bold colors, data visualization, a
 " width="100%" alt="Finora Personal Finance analysis">
 </p>
 
-> Add a screenshot of the dashboard to `assets/finora-preview.png` to display it here.
+
 
 ---
 
