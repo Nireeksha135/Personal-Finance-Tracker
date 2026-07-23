@@ -1,0 +1,3287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Finora — Personal Finance</title>
+
+<style>
+/* =========================================================
+   FINORA
+   Dark experimental personal finance dashboard
+========================================================= */
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+:root{
+    --bg:#090a0c;
+    --panel:#111316;
+    --panel2:#15181c;
+    --border:rgba(255,255,255,.09);
+
+    --text:#f5f7fa;
+    --muted:#858b94;
+
+    --lime:#c7ff4a;
+    --cyan:#54e8ff;
+    --pink:#ff5ca8;
+    --orange:#ff9c44;
+    --purple:#9c7cff;
+
+    --radius:24px;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    font-family:
+        Inter,
+        "Segoe UI",
+        Arial,
+        sans-serif;
+
+    background:
+        radial-gradient(
+            circle at 10% 10%,
+            rgba(84,232,255,.08),
+            transparent 24%
+        ),
+        radial-gradient(
+            circle at 90% 25%,
+            rgba(255,92,168,.07),
+            transparent 25%
+        ),
+        radial-gradient(
+            circle at 60% 90%,
+            rgba(199,255,74,.05),
+            transparent 25%
+        ),
+        var(--bg);
+
+    color:var(--text);
+    min-height:100vh;
+    overflow-x:hidden;
+}
+
+
+/* =========================================================
+   BACKGROUND DECORATIONS
+========================================================= */
+
+.noise{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    opacity:.17;
+    z-index:-1;
+
+    background-image:
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.18'/%3E%3C/svg%3E");
+}
+
+.grid-bg{
+    position:fixed;
+    inset:0;
+    z-index:-2;
+    pointer-events:none;
+
+    background-image:
+        linear-gradient(
+            rgba(255,255,255,.025) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(255,255,255,.025) 1px,
+            transparent 1px
+        );
+
+    background-size:55px 55px;
+
+    mask-image:
+        linear-gradient(
+            to bottom,
+            black,
+            transparent 80%
+        );
+}
+
+.orb{
+    position:fixed;
+    border-radius:50%;
+    filter:blur(2px);
+    z-index:-1;
+    pointer-events:none;
+}
+
+.orb-one{
+    width:340px;
+    height:340px;
+
+    right:-130px;
+    top:140px;
+
+    border:1px solid rgba(84,232,255,.25);
+
+    animation:floatOrb 9s ease-in-out infinite;
+}
+
+.orb-two{
+    width:150px;
+    height:150px;
+
+    left:-50px;
+    bottom:80px;
+
+    border:25px solid rgba(199,255,74,.06);
+
+    animation:floatOrb 7s ease-in-out infinite reverse;
+}
+
+@keyframes floatOrb{
+
+    0%,100%{
+        transform:translateY(0) rotate(0deg);
+    }
+
+    50%{
+        transform:translateY(-40px) rotate(12deg);
+    }
+}
+
+
+/* =========================================================
+   TOP NAVIGATION
+========================================================= */
+
+.navbar{
+    height:82px;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    padding:0 4.5%;
+
+    position:sticky;
+    top:0;
+
+    z-index:100;
+
+    background:rgba(9,10,12,.78);
+
+    backdrop-filter:blur(20px);
+
+    border-bottom:1px solid var(--border);
+}
+
+.brand{
+    display:flex;
+    align-items:center;
+    gap:11px;
+
+    font-size:20px;
+    font-weight:800;
+
+    letter-spacing:-.7px;
+}
+
+.brand-mark{
+    width:36px;
+    height:36px;
+
+    background:var(--lime);
+    color:#090a0c;
+
+    display:grid;
+    place-items:center;
+
+    border-radius:10px;
+
+    font-weight:900;
+
+    transform:rotate(-7deg);
+
+    box-shadow:
+        0 0 25px rgba(199,255,74,.2);
+}
+
+.nav-links{
+    display:flex;
+    align-items:center;
+    gap:7px;
+
+    padding:5px;
+
+    background:#111316;
+
+    border:1px solid var(--border);
+
+    border-radius:100px;
+}
+
+.nav-link{
+    border:0;
+    background:transparent;
+
+    color:#777d86;
+
+    padding:9px 17px;
+
+    border-radius:100px;
+
+    font-size:12px;
+    font-weight:650;
+
+    transition:.25s;
+}
+
+.nav-link:hover{
+    color:white;
+}
+
+.nav-link.active{
+    color:#090a0c;
+    background:var(--lime);
+}
+
+.nav-actions{
+    display:flex;
+    gap:9px;
+    align-items:center;
+}
+
+.circle-button{
+    width:40px;
+    height:40px;
+
+    border-radius:50%;
+
+    background:#14171a;
+
+    color:white;
+
+    border:1px solid var(--border);
+
+    transition:.25s;
+}
+
+.circle-button:hover{
+    transform:translateY(-3px);
+
+    border-color:rgba(255,255,255,.25);
+}
+
+.add-button{
+    height:40px;
+
+    padding:0 17px;
+
+    border:0;
+    border-radius:100px;
+
+    background:white;
+    color:#090a0c;
+
+    font-weight:750;
+
+    transition:.25s;
+}
+
+.add-button:hover{
+    background:var(--cyan);
+
+    transform:translateY(-2px);
+}
+
+
+/* =========================================================
+   CONTENT
+========================================================= */
+
+main{
+    width:min(1440px,92%);
+    margin:auto;
+
+    padding:
+        45px 0
+        80px;
+}
+
+.page{
+    display:none;
+}
+
+.page.active{
+    display:block;
+
+    animation:
+        revealPage .5s ease;
+}
+
+@keyframes revealPage{
+
+    from{
+        opacity:0;
+        transform:translateY(12px);
+    }
+
+    to{
+        opacity:1;
+        transform:none;
+    }
+}
+
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.hero{
+    min-height:225px;
+
+    display:grid;
+
+    grid-template-columns:
+        1.6fr
+        .7fr;
+
+    gap:30px;
+
+    align-items:end;
+
+    margin-bottom:32px;
+}
+
+.eyebrow{
+    color:var(--lime);
+
+    font-size:11px;
+    letter-spacing:2px;
+
+    font-weight:800;
+
+    margin-bottom:16px;
+}
+
+.hero h1{
+    font-size:
+        clamp(
+            42px,
+            5vw,
+            74px
+        );
+
+    line-height:.95;
+
+    letter-spacing:-4px;
+
+    max-width:780px;
+}
+
+.hero h1 span{
+    color:#646970;
+}
+
+.hero-description{
+    color:#969ca5;
+
+    line-height:1.7;
+
+    font-size:13px;
+
+    max-width:360px;
+
+    padding-bottom:7px;
+}
+
+
+/* =========================================================
+   TICKER
+========================================================= */
+
+.ticker{
+    border-top:1px solid var(--border);
+    border-bottom:1px solid var(--border);
+
+    overflow:hidden;
+
+    margin-bottom:25px;
+
+    height:43px;
+
+    display:flex;
+    align-items:center;
+}
+
+.ticker-track{
+    white-space:nowrap;
+
+    display:inline-block;
+
+    animation:
+        tickerMove
+        22s
+        linear
+        infinite;
+}
+
+.ticker span{
+    font-size:10px;
+
+    letter-spacing:1px;
+
+    margin-right:45px;
+
+    color:#8e949d;
+}
+
+.ticker b{
+    color:var(--lime);
+
+    margin-left:6px;
+}
+
+@keyframes tickerMove{
+
+    from{
+        transform:translateX(0);
+    }
+
+    to{
+        transform:translateX(-50%);
+    }
+}
+
+
+/* =========================================================
+   CARDS
+========================================================= */
+
+.card{
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.025),
+            transparent
+        ),
+        var(--panel);
+
+    border:1px solid var(--border);
+
+    border-radius:var(--radius);
+
+    position:relative;
+
+    overflow:hidden;
+}
+
+.card::after{
+    content:"";
+
+    position:absolute;
+
+    width:160px;
+    height:160px;
+
+    border-radius:50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(255,255,255,.04),
+            transparent 70%
+        );
+
+    right:-60px;
+    top:-70px;
+
+    pointer-events:none;
+}
+
+
+/* =========================================================
+   METRIC CARDS
+========================================================= */
+
+.metrics{
+    display:grid;
+
+    grid-template-columns:
+        1.25fr
+        1fr
+        1fr
+        1fr;
+
+    gap:14px;
+
+    margin-bottom:14px;
+}
+
+.metric{
+    min-height:178px;
+
+    padding:23px;
+
+    transition:
+        transform .3s,
+        border-color .3s;
+}
+
+.metric:hover{
+    transform:
+        translateY(-5px);
+
+    border-color:
+        rgba(255,255,255,.2);
+}
+
+.metric.primary{
+    background:var(--lime);
+    color:#0c0e0c;
+}
+
+.metric.primary::after{
+    border:
+        28px solid
+        rgba(0,0,0,.05);
+
+    background:none;
+}
+
+.metric-top{
+    display:flex;
+
+    justify-content:
+        space-between;
+
+    align-items:center;
+}
+
+.metric-label{
+    font-size:11px;
+    letter-spacing:.8px;
+
+    color:#7e858d;
+}
+
+.primary .metric-label{
+    color:
+        rgba(0,0,0,.55);
+}
+
+.metric-icon{
+    width:34px;
+    height:34px;
+
+    border-radius:50%;
+
+    border:
+        1px solid
+        var(--border);
+
+    display:grid;
+    place-items:center;
+
+    font-size:13px;
+}
+
+.primary .metric-icon{
+    border-color:
+        rgba(0,0,0,.15);
+}
+
+.metric-value{
+    margin-top:28px;
+
+    font-size:29px;
+
+    font-weight:760;
+
+    letter-spacing:-1.5px;
+}
+
+.metric-change{
+    font-size:10px;
+
+    margin-top:10px;
+
+    color:#7f858d;
+}
+
+.primary .metric-change{
+    color:
+        rgba(0,0,0,.58);
+}
+
+.good{
+    color:var(--lime);
+}
+
+
+/* =========================================================
+   DASHBOARD GRID
+========================================================= */
+
+.dashboard-grid{
+    display:grid;
+
+    grid-template-columns:
+        1.75fr
+        1fr;
+
+    gap:14px;
+
+    margin-bottom:14px;
+}
+
+.panel{
+    padding:25px;
+}
+
+.panel-head{
+    display:flex;
+
+    justify-content:
+        space-between;
+
+    align-items:flex-start;
+
+    margin-bottom:28px;
+}
+
+.panel-title{
+    font-size:15px;
+
+    font-weight:700;
+}
+
+.panel-subtitle{
+    font-size:10px;
+
+    color:var(--muted);
+
+    margin-top:5px;
+}
+
+.selector{
+    background:#191c20;
+
+    border:
+        1px solid
+        var(--border);
+
+    color:#aeb3ba;
+
+    padding:8px 12px;
+
+    border-radius:100px;
+
+    font-size:10px;
+
+    outline:none;
+}
+
+
+/* =========================================================
+   GRAPH
+========================================================= */
+
+.graph{
+    height:245px;
+
+    position:relative;
+
+    display:flex;
+
+    align-items:flex-end;
+
+    justify-content:
+        space-around;
+
+    gap:10px;
+
+    padding:
+        20px
+        10px
+        30px;
+
+    border-bottom:
+        1px solid
+        var(--border);
+}
+
+.graph-line{
+    position:absolute;
+
+    left:0;
+    right:0;
+
+    border-top:
+        1px dashed
+        rgba(255,255,255,.06);
+}
+
+.graph-line.one{
+    top:25%;
+}
+
+.graph-line.two{
+    top:50%;
+}
+
+.graph-line.three{
+    top:75%;
+}
+
+.bar-group{
+    height:100%;
+
+    flex:1;
+
+    display:flex;
+
+    align-items:flex-end;
+
+    justify-content:center;
+
+    gap:5px;
+
+    position:relative;
+}
+
+.bar{
+    width:13px;
+
+    border-radius:
+        7px
+        7px
+        2px
+        2px;
+
+    transform-origin:bottom;
+
+    animation:
+        growBar
+        1s
+        cubic-bezier(.2,.8,.2,1);
+}
+
+@keyframes growBar{
+
+    from{
+        transform:
+            scaleY(0);
+    }
+}
+
+.income-bar{
+    background:var(--lime);
+
+    box-shadow:
+        0 0 20px
+        rgba(199,255,74,.12);
+}
+
+.expense-bar{
+    background:#34383d;
+}
+
+.bar-group:hover
+.income-bar{
+    background:var(--cyan);
+}
+
+.month{
+    position:absolute;
+
+    bottom:-22px;
+
+    font-size:9px;
+
+    color:#666c74;
+}
+
+.legend{
+    display:flex;
+
+    gap:20px;
+
+    margin-top:18px;
+
+    color:#777e87;
+
+    font-size:10px;
+}
+
+.dot{
+    width:7px;
+    height:7px;
+
+    display:inline-block;
+
+    border-radius:50%;
+
+    margin-right:6px;
+}
+
+
+/* =========================================================
+   DONUT
+========================================================= */
+
+.donut-container{
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    margin:
+        8px 0
+        27px;
+}
+
+.donut{
+    width:158px;
+    height:158px;
+
+    border-radius:50%;
+
+    background:
+        conic-gradient(
+            var(--pink) 0 34%,
+            var(--lime) 34% 58%,
+            var(--orange) 58% 77%,
+            var(--cyan) 77% 90%,
+            #272a2f 90%
+        );
+
+    position:relative;
+
+    animation:
+        donutEnter
+        1.1s
+        ease;
+}
+
+@keyframes donutEnter{
+
+    from{
+        transform:
+            rotate(-80deg)
+            scale(.7);
+
+        opacity:0;
+    }
+}
+
+.donut::after{
+    content:"₹32.4K";
+
+    position:absolute;
+
+    inset:27px;
+
+    background:var(--panel);
+
+    border-radius:50%;
+
+    display:grid;
+    place-items:center;
+
+    font-weight:800;
+
+    font-size:17px;
+}
+
+.categories{
+    display:grid;
+    gap:11px;
+}
+
+.category{
+    display:flex;
+
+    justify-content:
+        space-between;
+
+    align-items:center;
+
+    font-size:11px;
+}
+
+.category-name{
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    color:#8e949c;
+}
+
+.category-dot{
+    width:7px;
+    height:7px;
+
+    border-radius:50%;
+}
+
+
+/* =========================================================
+   TRANSACTIONS
+========================================================= */
+
+.transactions{
+    padding:25px;
+}
+
+.transaction{
+    display:grid;
+
+    grid-template-columns:
+        48px
+        1fr
+        130px
+        100px;
+
+    align-items:center;
+
+    padding:
+        15px
+        4px;
+
+    border-bottom:
+        1px solid
+        var(--border);
+
+    transition:.2s;
+}
+
+.transaction:hover{
+    padding-left:10px;
+
+    background:
+        rgba(255,255,255,.015);
+}
+
+.transaction:last-child{
+    border:0;
+}
+
+.transaction-icon{
+    width:36px;
+    height:36px;
+
+    border-radius:50%;
+
+    display:grid;
+    place-items:center;
+
+    background:#191c20;
+
+    font-size:14px;
+}
+
+.transaction-name{
+    font-size:12px;
+
+    font-weight:650;
+}
+
+.transaction-category,
+.transaction-date{
+    font-size:9px;
+
+    color:#70767e;
+
+    margin-top:4px;
+}
+
+.transaction-date{
+    margin:0;
+}
+
+.amount{
+    text-align:right;
+
+    font-size:12px;
+
+    font-weight:700;
+}
+
+.income-amount{
+    color:var(--lime);
+}
+
+
+/* =========================================================
+   DECORATIVE CARD
+========================================================= */
+
+.visual-card{
+    min-height:180px;
+
+    background:
+        linear-gradient(
+            130deg,
+            #131619,
+            #191b1f
+        );
+
+    position:relative;
+
+    overflow:hidden;
+
+    margin-bottom:14px;
+
+    padding:28px;
+}
+
+.visual-circle{
+    position:absolute;
+
+    width:240px;
+    height:240px;
+
+    border:
+        42px solid
+        var(--pink);
+
+    border-radius:50%;
+
+    right:-60px;
+    bottom:-135px;
+
+    opacity:.85;
+
+    animation:
+        visualSpin
+        14s
+        linear
+        infinite;
+}
+
+.visual-circle.two{
+    width:100px;
+    height:100px;
+
+    border:
+        18px solid
+        var(--cyan);
+
+    right:145px;
+    top:-50px;
+
+    opacity:.65;
+
+    animation-direction:
+        reverse;
+}
+
+@keyframes visualSpin{
+
+    to{
+        transform:
+            rotate(360deg);
+    }
+}
+
+.visual-card h3{
+    font-size:26px;
+
+    max-width:430px;
+
+    letter-spacing:-1.2px;
+}
+
+.visual-card p{
+    color:#7e848c;
+
+    margin-top:10px;
+
+    font-size:11px;
+
+    max-width:380px;
+
+    line-height:1.7;
+}
+
+
+/* =========================================================
+   OTHER PAGES
+========================================================= */
+
+.page-heading{
+    margin-bottom:30px;
+}
+
+.page-heading h2{
+    font-size:44px;
+
+    letter-spacing:-2px;
+}
+
+.page-heading p{
+    color:var(--muted);
+
+    margin-top:8px;
+
+    font-size:12px;
+}
+
+.budget-grid{
+    display:grid;
+
+    grid-template-columns:
+        repeat(2,1fr);
+
+    gap:14px;
+}
+
+.budget-card{
+    padding:25px;
+}
+
+.budget-top{
+    display:flex;
+
+    justify-content:
+        space-between;
+
+    margin-bottom:18px;
+}
+
+.budget-name{
+    font-size:14px;
+
+    font-weight:700;
+}
+
+.budget-value{
+    font-size:11px;
+
+    color:var(--muted);
+}
+
+.progress{
+    height:7px;
+
+    border-radius:100px;
+
+    background:#25282d;
+
+    overflow:hidden;
+}
+
+.progress-fill{
+    height:100%;
+
+    border-radius:100px;
+
+    animation:
+        progressEnter
+        1.2s
+        ease;
+}
+
+@keyframes progressEnter{
+
+    from{
+        width:0;
+    }
+}
+
+.form-control{
+    margin-bottom:18px;
+}
+
+.form-control label{
+    display:block;
+
+    color:#777e86;
+
+    font-size:10px;
+
+    margin-bottom:7px;
+}
+
+.form-control input,
+.form-control select{
+    width:100%;
+
+    background:#181b1f;
+
+    border:
+        1px solid
+        var(--border);
+
+    color:white;
+
+    padding:12px;
+
+    border-radius:12px;
+
+    outline:none;
+}
+
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+.modal-overlay{
+    position:fixed;
+
+    inset:0;
+
+    background:
+        rgba(0,0,0,.7);
+
+    backdrop-filter:
+        blur(12px);
+
+    display:none;
+
+    align-items:center;
+    justify-content:center;
+
+    z-index:500;
+}
+
+.modal-overlay.show{
+    display:flex;
+}
+
+.modal{
+    width:430px;
+
+    max-width:92%;
+
+    background:#111316;
+
+    border:
+        1px solid
+        rgba(255,255,255,.12);
+
+    border-radius:25px;
+
+    padding:27px;
+
+    box-shadow:
+        0 40px 100px
+        rgba(0,0,0,.6);
+
+    animation:
+        modalEnter
+        .3s
+        ease;
+}
+
+@keyframes modalEnter{
+
+    from{
+        transform:
+            translateY(20px)
+            scale(.97);
+
+        opacity:0;
+    }
+}
+
+.modal-head{
+    display:flex;
+
+    justify-content:
+        space-between;
+
+    margin-bottom:23px;
+}
+
+.modal h3{
+    font-size:20px;
+}
+
+.close{
+    border:0;
+
+    background:transparent;
+
+    color:white;
+
+    font-size:22px;
+}
+
+.form-row{
+    display:grid;
+
+    grid-template-columns:
+        1fr
+        1fr;
+
+    gap:10px;
+}
+
+.modal-actions{
+    display:flex;
+
+    justify-content:flex-end;
+
+    gap:8px;
+
+    margin-top:20px;
+}
+
+.secondary{
+    background:#1b1e22;
+
+    border:
+        1px solid
+        var(--border);
+
+    color:white;
+
+    padding:
+        10px 15px;
+
+    border-radius:100px;
+}
+
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+.toast{
+    position:fixed;
+
+    bottom:25px;
+    right:25px;
+
+    background:var(--lime);
+    color:#090a0c;
+
+    padding:
+        12px 19px;
+
+    border-radius:100px;
+
+    font-size:11px;
+
+    font-weight:750;
+
+    transform:
+        translateY(30px);
+
+    opacity:0;
+
+    transition:.3s;
+
+    z-index:600;
+}
+
+.toast.show{
+    opacity:1;
+
+    transform:none;
+}
+
+
+/* =========================================================
+   CURSOR GLOW
+========================================================= */
+
+.cursor-glow{
+    width:250px;
+    height:250px;
+
+    position:fixed;
+
+    border-radius:50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(84,232,255,.055),
+            transparent 65%
+        );
+
+    pointer-events:none;
+
+    transform:
+        translate(-50%,-50%);
+
+    z-index:-1;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media(max-width:950px){
+
+    .nav-links{
+        display:none;
+    }
+
+    .metrics{
+        grid-template-columns:
+            repeat(2,1fr);
+    }
+
+    .dashboard-grid{
+        grid-template-columns:1fr;
+    }
+
+    .hero{
+        grid-template-columns:1fr;
+    }
+
+    .hero-description{
+        display:none;
+    }
+}
+
+@media(max-width:600px){
+
+    main{
+        width:94%;
+        padding-top:30px;
+    }
+
+    .navbar{
+        padding:0 3%;
+    }
+
+    .metrics{
+        grid-template-columns:1fr;
+    }
+
+    .hero h1{
+        letter-spacing:-2px;
+    }
+
+    .budget-grid{
+        grid-template-columns:1fr;
+    }
+
+    .transaction{
+        grid-template-columns:
+            44px
+            1fr
+            90px;
+    }
+
+    .transaction-date{
+        display:none;
+    }
+
+    .form-row{
+        grid-template-columns:1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="noise"></div>
+<div class="grid-bg"></div>
+
+<div class="orb orb-one"></div>
+<div class="orb orb-two"></div>
+
+<div
+    class="cursor-glow"
+    id="cursorGlow">
+</div>
+
+
+<!-- ======================================================
+     NAVBAR
+====================================================== -->
+
+<nav class="navbar">
+
+    <div class="brand">
+        <div class="brand-mark">F</div>
+        finora.
+    </div>
+
+    <div class="nav-links">
+
+        <button
+            class="nav-link active"
+            data-page="dashboard">
+            Overview
+        </button>
+
+        <button
+            class="nav-link"
+            data-page="transactions">
+            Transactions
+        </button>
+
+        <button
+            class="nav-link"
+            data-page="budgets">
+            Budgets
+        </button>
+
+        <button
+            class="nav-link"
+            data-page="analytics">
+            Analytics
+        </button>
+
+        <button
+            class="nav-link"
+            data-page="settings">
+            Settings
+        </button>
+
+    </div>
+
+    <div class="nav-actions">
+
+        <button
+            class="circle-button"
+            onclick="notification()">
+            ◌
+        </button>
+
+        <button
+            class="add-button"
+            onclick="openModal()">
+            + Add transaction
+        </button>
+
+    </div>
+
+</nav>
+
+
+<main>
+
+
+<!-- ======================================================
+     DASHBOARD
+====================================================== -->
+
+<section
+    class="page active"
+    id="dashboard">
+
+
+    <div class="hero">
+
+        <div>
+
+            <div class="eyebrow">
+                PERSONAL FINANCE / 2026
+            </div>
+
+            <h1>
+                Your money,
+                <span>made visible.</span>
+            </h1>
+
+        </div>
+
+        <p class="hero-description">
+
+            A clear view of where your money
+            comes from, where it goes and how
+            much you're keeping.
+
+        </p>
+
+    </div>
+
+
+    <!-- MOVING TICKER -->
+
+    <div class="ticker">
+
+        <div class="ticker-track">
+
+            <span>
+                TOTAL BALANCE
+                <b>₹1,24,580 ↑</b>
+            </span>
+
+            <span>
+                JULY SPENDING
+                <b>₹32,450</b>
+            </span>
+
+            <span>
+                SAVINGS RATE
+                <b>52.6% ↑</b>
+            </span>
+
+            <span>
+                MONTHLY GOAL
+                <b>120% COMPLETE</b>
+            </span>
+
+            <span>
+                CASH FLOW
+                <b>POSITIVE</b>
+            </span>
+
+            <span>
+                TOTAL BALANCE
+                <b>₹1,24,580 ↑</b>
+            </span>
+
+            <span>
+                JULY SPENDING
+                <b>₹32,450</b>
+            </span>
+
+            <span>
+                SAVINGS RATE
+                <b>52.6% ↑</b>
+            </span>
+
+            <span>
+                MONTHLY GOAL
+                <b>120% COMPLETE</b>
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <!-- METRICS -->
+
+    <div class="metrics">
+
+        <div class="card metric primary">
+
+            <div class="metric-top">
+
+                <div class="metric-label">
+                    TOTAL BALANCE
+                </div>
+
+                <div class="metric-icon">
+                    ↗
+                </div>
+
+            </div>
+
+            <div class="metric-value">
+                ₹1,24,580
+            </div>
+
+            <div class="metric-change">
+                +₹9,420 this month · 8.2% ↑
+            </div>
+
+        </div>
+
+
+        <div class="card metric">
+
+            <div class="metric-top">
+
+                <div class="metric-label">
+                    INCOME
+                </div>
+
+                <div class="metric-icon">
+                    +
+                </div>
+
+            </div>
+
+            <div class="metric-value">
+                ₹68,500
+            </div>
+
+            <div class="metric-change good">
+                ↑ 4.1% this month
+            </div>
+
+        </div>
+
+
+        <div class="card metric">
+
+            <div class="metric-top">
+
+                <div class="metric-label">
+                    EXPENSES
+                </div>
+
+                <div class="metric-icon">
+                    −
+                </div>
+
+            </div>
+
+            <div class="metric-value">
+                ₹32,450
+            </div>
+
+            <div class="metric-change">
+                47.4% of income
+            </div>
+
+        </div>
+
+
+        <div class="card metric">
+
+            <div class="metric-top">
+
+                <div class="metric-label">
+                    SAVED
+                </div>
+
+                <div class="metric-icon">
+                    ◇
+                </div>
+
+            </div>
+
+            <div class="metric-value">
+                ₹36,050
+            </div>
+
+            <div class="metric-change good">
+                120% of monthly goal
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- DECORATIVE VISUAL -->
+
+    <div class="card visual-card">
+
+        <div class="visual-circle"></div>
+
+        <div class="visual-circle two"></div>
+
+        <div class="eyebrow">
+            JULY / FINANCIAL SNAPSHOT
+        </div>
+
+        <h3>
+            You're keeping more than
+            half of what you earn.
+        </h3>
+
+        <p>
+            Your savings rate is currently
+            52.6%. Spending remains comfortably
+            below your monthly income.
+        </p>
+
+    </div>
+
+
+    <!-- CHARTS -->
+
+    <div class="dashboard-grid">
+
+        <div class="card panel">
+
+            <div class="panel-head">
+
+                <div>
+
+                    <div class="panel-title">
+                        Cash flow
+                    </div>
+
+                    <div class="panel-subtitle">
+                        Income vs expenses
+                    </div>
+
+                </div>
+
+                <select
+                    class="selector"
+                    onchange="animateChart()">
+
+                    <option>
+                        Last 6 months
+                    </option>
+
+                    <option>
+                        This year
+                    </option>
+
+                    <option>
+                        Last year
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="graph">
+
+                <div class="graph-line one"></div>
+                <div class="graph-line two"></div>
+                <div class="graph-line three"></div>
+
+
+                <div class="bar-group">
+
+                    <div
+                        class="bar income-bar"
+                        style="height:65%">
+                    </div>
+
+                    <div
+                        class="bar expense-bar"
+                        style="height:42%">
+                    </div>
+
+                    <div class="month">
+                        FEB
+                    </div>
+
+                </div>
+
+
+                <div class="bar-group">
+
+                    <div
+                        class="bar income-bar"
+                        style="height:76%">
+                    </div>
+
+                    <div
+                        class="bar expense-bar"
+                        style="height:48%">
+                    </div>
+
+                    <div class="month">
+                        MAR
+                    </div>
+
+                </div>
+
+
+                <div class="bar-group">
+
+                    <div
+                        class="bar income-bar"
+                        style="height:68%">
+                    </div>
+
+                    <div
+                        class="bar expense-bar"
+                        style="height:51%">
+                    </div>
+
+                    <div class="month">
+                        APR
+                    </div>
+
+                </div>
+
+
+                <div class="bar-group">
+
+                    <div
+                        class="bar income-bar"
+                        style="height:84%">
+                    </div>
+
+                    <div
+                        class="bar expense-bar"
+                        style="height:45%">
+                    </div>
+
+                    <div class="month">
+                        MAY
+                    </div>
+
+                </div>
+
+
+                <div class="bar-group">
+
+                    <div
+                        class="bar income-bar"
+                        style="height:78%">
+                    </div>
+
+                    <div
+                        class="bar expense-bar"
+                        style="height:53%">
+                    </div>
+
+                    <div class="month">
+                        JUN
+                    </div>
+
+                </div>
+
+
+                <div class="bar-group">
+
+                    <div
+                        class="bar income-bar"
+                        style="height:93%">
+                    </div>
+
+                    <div
+                        class="bar expense-bar"
+                        style="height:44%">
+                    </div>
+
+                    <div class="month">
+                        JUL
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="legend">
+
+                <span>
+                    <i
+                        class="dot"
+                        style="background:var(--lime)">
+                    </i>
+
+                    Income
+                </span>
+
+                <span>
+                    <i
+                        class="dot"
+                        style="background:#34383d">
+                    </i>
+
+                    Expenses
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- DONUT -->
+
+        <div class="card panel">
+
+            <div class="panel-head">
+
+                <div>
+
+                    <div class="panel-title">
+                        Where it went
+                    </div>
+
+                    <div class="panel-subtitle">
+                        July spending
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="donut-container">
+                <div class="donut"></div>
+            </div>
+
+
+            <div class="categories">
+
+                <div class="category">
+
+                    <div class="category-name">
+
+                        <span
+                            class="category-dot"
+                            style="background:var(--pink)">
+                        </span>
+
+                        Housing
+
+                    </div>
+
+                    <strong>
+                        ₹11,350
+                    </strong>
+
+                </div>
+
+
+                <div class="category">
+
+                    <div class="category-name">
+
+                        <span
+                            class="category-dot"
+                            style="background:var(--lime)">
+                        </span>
+
+                        Food
+
+                    </div>
+
+                    <strong>
+                        ₹8,120
+                    </strong>
+
+                </div>
+
+
+                <div class="category">
+
+                    <div class="category-name">
+
+                        <span
+                            class="category-dot"
+                            style="background:var(--orange)">
+                        </span>
+
+                        Shopping
+
+                    </div>
+
+                    <strong>
+                        ₹5,840
+                    </strong>
+
+                </div>
+
+
+                <div class="category">
+
+                    <div class="category-name">
+
+                        <span
+                            class="category-dot"
+                            style="background:var(--cyan)">
+                        </span>
+
+                        Transport
+
+                    </div>
+
+                    <strong>
+                        ₹3,890
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- TRANSACTIONS -->
+
+    <div class="card transactions">
+
+        <div class="panel-head">
+
+            <div>
+
+                <div class="panel-title">
+                    Recent activity
+                </div>
+
+                <div class="panel-subtitle">
+                    Latest transactions
+                </div>
+
+            </div>
+
+            <button
+                class="secondary"
+                onclick="navigate('transactions')">
+                View all →
+            </button>
+
+        </div>
+
+
+        <div id="recentTransactions">
+
+            <div class="transaction">
+
+                <div class="transaction-icon">
+                    ◇
+                </div>
+
+                <div>
+
+                    <div class="transaction-name">
+                        Myntra
+                    </div>
+
+                    <div class="transaction-category">
+                        SHOPPING
+                    </div>
+
+                </div>
+
+                <div class="transaction-date">
+                    22 JUL 2026
+                </div>
+
+                <div class="amount">
+                    −₹2,490
+                </div>
+
+            </div>
+
+
+            <div class="transaction">
+
+                <div class="transaction-icon">
+                    ↗
+                </div>
+
+                <div>
+
+                    <div class="transaction-name">
+                        Freelance project
+                    </div>
+
+                    <div class="transaction-category">
+                        INCOME
+                    </div>
+
+                </div>
+
+                <div class="transaction-date">
+                    20 JUL 2026
+                </div>
+
+                <div
+                    class="amount income-amount">
+                    +₹18,000
+                </div>
+
+            </div>
+
+
+            <div class="transaction">
+
+                <div class="transaction-icon">
+                    ○
+                </div>
+
+                <div>
+
+                    <div class="transaction-name">
+                        Dinner
+                    </div>
+
+                    <div class="transaction-category">
+                        FOOD
+                    </div>
+
+                </div>
+
+                <div class="transaction-date">
+                    19 JUL 2026
+                </div>
+
+                <div class="amount">
+                    −₹860
+                </div>
+
+            </div>
+
+
+            <div class="transaction">
+
+                <div class="transaction-icon">
+                    →
+                </div>
+
+                <div>
+
+                    <div class="transaction-name">
+                        Uber
+                    </div>
+
+                    <div class="transaction-category">
+                        TRANSPORT
+                    </div>
+
+                </div>
+
+                <div class="transaction-date">
+                    18 JUL 2026
+                </div>
+
+                <div class="amount">
+                    −₹340
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ======================================================
+     TRANSACTIONS PAGE
+====================================================== -->
+
+<section
+    class="page"
+    id="transactions">
+
+    <div class="page-heading">
+
+        <div class="eyebrow">
+            FINANCIAL ACTIVITY
+        </div>
+
+        <h2>
+            Transactions.
+        </h2>
+
+        <p>
+            Every rupee in and out,
+            all in one place.
+        </p>
+
+    </div>
+
+
+    <div class="card transactions">
+
+        <div class="panel-head">
+
+            <div class="panel-title">
+                All transactions
+            </div>
+
+            <select class="selector">
+
+                <option>
+                    All categories
+                </option>
+
+                <option>
+                    Food
+                </option>
+
+                <option>
+                    Shopping
+                </option>
+
+                <option>
+                    Transport
+                </option>
+
+                <option>
+                    Income
+                </option>
+
+            </select>
+
+        </div>
+
+        <div id="allTransactions"></div>
+
+    </div>
+
+</section>
+
+
+<!-- ======================================================
+     BUDGETS PAGE
+====================================================== -->
+
+<section
+    class="page"
+    id="budgets">
+
+    <div class="page-heading">
+
+        <div class="eyebrow">
+            MONTHLY LIMITS
+        </div>
+
+        <h2>
+            Spend smarter.
+        </h2>
+
+        <p>
+            Your monthly budget,
+            without the spreadsheets.
+        </p>
+
+    </div>
+
+
+    <div class="budget-grid">
+
+
+        <div class="card budget-card">
+
+            <div class="budget-top">
+
+                <div class="budget-name">
+                    Food & Dining
+                </div>
+
+                <div class="budget-value">
+                    ₹8,120 / ₹12,000
+                </div>
+
+            </div>
+
+            <div class="progress">
+
+                <div
+                    class="progress-fill"
+                    style="
+                        width:68%;
+                        background:var(--lime);
+                    ">
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="card budget-card">
+
+            <div class="budget-top">
+
+                <div class="budget-name">
+                    Shopping
+                </div>
+
+                <div class="budget-value">
+                    ₹5,840 / ₹8,000
+                </div>
+
+            </div>
+
+            <div class="progress">
+
+                <div
+                    class="progress-fill"
+                    style="
+                        width:73%;
+                        background:var(--pink);
+                    ">
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="card budget-card">
+
+            <div class="budget-top">
+
+                <div class="budget-name">
+                    Transportation
+                </div>
+
+                <div class="budget-value">
+                    ₹3,890 / ₹6,000
+                </div>
+
+            </div>
+
+            <div class="progress">
+
+                <div
+                    class="progress-fill"
+                    style="
+                        width:65%;
+                        background:var(--cyan);
+                    ">
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="card budget-card">
+
+            <div class="budget-top">
+
+                <div class="budget-name">
+                    Entertainment
+                </div>
+
+                <div class="budget-value">
+                    ₹2,450 / ₹5,000
+                </div>
+
+            </div>
+
+            <div class="progress">
+
+                <div
+                    class="progress-fill"
+                    style="
+                        width:49%;
+                        background:var(--orange);
+                    ">
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ======================================================
+     ANALYTICS
+====================================================== -->
+
+<section
+    class="page"
+    id="analytics">
+
+    <div class="page-heading">
+
+        <div class="eyebrow">
+            MONEY INTELLIGENCE
+        </div>
+
+        <h2>
+            The bigger picture.
+        </h2>
+
+        <p>
+            Patterns behind your money.
+        </p>
+
+    </div>
+
+
+    <div class="metrics">
+
+        <div class="card metric primary">
+
+            <div class="metric-label">
+                SAVINGS RATE
+            </div>
+
+            <div class="metric-value">
+                52.6%
+            </div>
+
+            <div class="metric-change">
+                Strong financial position
+            </div>
+
+        </div>
+
+
+        <div class="card metric">
+
+            <div class="metric-label">
+                AVG. MONTHLY SPEND
+            </div>
+
+            <div class="metric-value">
+                ₹30,820
+            </div>
+
+            <div class="metric-change">
+                +1.8% this quarter
+            </div>
+
+        </div>
+
+
+        <div class="card metric">
+
+            <div class="metric-label">
+                BIGGEST CATEGORY
+            </div>
+
+            <div class="metric-value">
+                Housing
+            </div>
+
+            <div class="metric-change">
+                35% of total spend
+            </div>
+
+        </div>
+
+
+        <div class="card metric">
+
+            <div class="metric-label">
+                CASH FLOW
+            </div>
+
+            <div class="metric-value good">
+                Positive
+            </div>
+
+            <div class="metric-change">
+                +₹36,050 this month
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ======================================================
+     SETTINGS
+====================================================== -->
+
+<section
+    class="page"
+    id="settings">
+
+    <div class="page-heading">
+
+        <div class="eyebrow">
+            PREFERENCES
+        </div>
+
+        <h2>
+            Make it yours.
+        </h2>
+
+        <p>
+            Personalize your finance dashboard.
+        </p>
+
+    </div>
+
+
+    <div
+        class="card panel"
+        style="max-width:650px">
+
+        <div class="form-control">
+
+            <label>
+                DISPLAY NAME
+            </label>
+
+            <input
+                value="Sweety K">
+
+        </div>
+
+
+        <div class="form-control">
+
+            <label>
+                CURRENCY
+            </label>
+
+            <select>
+
+                <option>
+                    Indian Rupee — ₹
+                </option>
+
+                <option>
+                    US Dollar — $
+                </option>
+
+                <option>
+                    Euro — €
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div class="form-control">
+
+            <label>
+                MONTHLY SAVINGS GOAL
+            </label>
+
+            <input
+                value="₹30,000">
+
+        </div>
+
+
+        <button
+            class="add-button"
+            onclick="
+                showToast(
+                    'Settings saved'
+                )
+            ">
+            Save changes
+        </button>
+
+    </div>
+
+</section>
+
+</main>
+
+
+<!-- ======================================================
+     MODAL
+====================================================== -->
+
+<div
+    class="modal-overlay"
+    id="modal">
+
+    <div class="modal">
+
+        <div class="modal-head">
+
+            <div>
+
+                <div class="eyebrow">
+                    NEW ENTRY
+                </div>
+
+                <h3>
+                    Add transaction
+                </h3>
+
+            </div>
+
+            <button
+                class="close"
+                onclick="closeModal()">
+                ×
+            </button>
+
+        </div>
+
+
+        <form
+            id="transactionForm">
+
+
+            <div class="form-row">
+
+
+                <div class="form-control">
+
+                    <label>
+                        TYPE
+                    </label>
+
+                    <select id="type">
+
+                        <option value="expense">
+                            Expense
+                        </option>
+
+                        <option value="income">
+                            Income
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-control">
+
+                    <label>
+                        AMOUNT
+                    </label>
+
+                    <input
+                        id="amount"
+                        type="number"
+                        placeholder="₹ 0"
+                        required>
+
+                </div>
+
+            </div>
+
+
+            <div class="form-control">
+
+                <label>
+                    DESCRIPTION
+                </label>
+
+                <input
+                    id="description"
+                    placeholder="What was it for?"
+                    required>
+
+            </div>
+
+
+            <div class="form-control">
+
+                <label>
+                    CATEGORY
+                </label>
+
+                <select id="category">
+
+                    <option>
+                        Food
+                    </option>
+
+                    <option>
+                        Shopping
+                    </option>
+
+                    <option>
+                        Transport
+                    </option>
+
+                    <option>
+                        Housing
+                    </option>
+
+                    <option>
+                        Entertainment
+                    </option>
+
+                    <option>
+                        Income
+                    </option>
+
+                    <option>
+                        Other
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-control">
+
+                <label>
+                    DATE
+                </label>
+
+                <input
+                    id="date"
+                    type="date"
+                    required>
+
+            </div>
+
+
+            <div class="modal-actions">
+
+                <button
+                    type="button"
+                    class="secondary"
+                    onclick="closeModal()">
+                    Cancel
+                </button>
+
+                <button
+                    type="submit"
+                    class="add-button">
+                    Add transaction
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<div
+    class="toast"
+    id="toast">
+</div>
+
+
+<script>
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+const navLinks =
+    document.querySelectorAll(
+        ".nav-link"
+    );
+
+const pages =
+    document.querySelectorAll(
+        ".page"
+    );
+
+
+navLinks.forEach(link => {
+
+    link.addEventListener(
+        "click",
+        () => {
+
+            navigate(
+                link.dataset.page
+            );
+
+        }
+    );
+
+});
+
+
+function navigate(pageName){
+
+    pages.forEach(
+        page =>
+            page.classList.remove(
+                "active"
+            )
+    );
+
+
+    document
+        .getElementById(pageName)
+        .classList.add("active");
+
+
+    navLinks.forEach(link => {
+
+        link.classList.toggle(
+            "active",
+            link.dataset.page ===
+                pageName
+        );
+
+    });
+
+
+    if(
+        pageName ===
+        "transactions"
+    ){
+
+        syncTransactions();
+
+    }
+
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+
+}
+
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+function openModal(){
+
+    document
+        .getElementById("modal")
+        .classList.add("show");
+
+
+    document
+        .getElementById("date")
+        .value =
+        new Date()
+            .toISOString()
+            .split("T")[0];
+
+}
+
+
+function closeModal(){
+
+    document
+        .getElementById("modal")
+        .classList.remove("show");
+
+}
+
+
+document
+    .getElementById("modal")
+    .addEventListener(
+        "click",
+        event => {
+
+            if(
+                event.target.id ===
+                "modal"
+            ){
+
+                closeModal();
+
+            }
+
+        }
+    );
+
+
+/* =========================================================
+   ADD TRANSACTION
+========================================================= */
+
+document
+    .getElementById(
+        "transactionForm"
+    )
+    .addEventListener(
+        "submit",
+        function(event){
+
+            event.preventDefault();
+
+
+            const type =
+                document
+                    .getElementById(
+                        "type"
+                    )
+                    .value;
+
+
+            const amount =
+                Number(
+                    document
+                        .getElementById(
+                            "amount"
+                        )
+                        .value
+                );
+
+
+            const description =
+                document
+                    .getElementById(
+                        "description"
+                    )
+                    .value;
+
+
+            const category =
+                document
+                    .getElementById(
+                        "category"
+                    )
+                    .value;
+
+
+            const date =
+                document
+                    .getElementById(
+                        "date"
+                    )
+                    .value;
+
+
+            const formattedDate =
+                new Date(date)
+                    .toLocaleDateString(
+                        "en-IN",
+                        {
+                            day:"2-digit",
+                            month:"short",
+                            year:"numeric"
+                        }
+                    )
+                    .toUpperCase();
+
+
+            const iconMap = {
+
+                Food:"○",
+
+                Shopping:"◇",
+
+                Transport:"→",
+
+                Housing:"□",
+
+                Entertainment:"△",
+
+                Income:"↗",
+
+                Other:"•"
+
+            };
+
+
+            const row =
+                document.createElement(
+                    "div"
+                );
+
+
+            row.className =
+                "transaction";
+
+
+            row.innerHTML = `
+
+                <div
+                    class="transaction-icon">
+
+                    ${iconMap[category]}
+
+                </div>
+
+
+                <div>
+
+                    <div
+                        class="transaction-name">
+
+                        ${description}
+
+                    </div>
+
+                    <div
+                        class="transaction-category">
+
+                        ${category.toUpperCase()}
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="transaction-date">
+
+                    ${formattedDate}
+
+                </div>
+
+
+                <div
+                    class="
+                        amount
+                        ${
+                            type ===
+                            "income"
+                            ?
+                            "income-amount"
+                            :
+                            ""
+                        }
+                    ">
+
+                    ${
+                        type ===
+                        "income"
+                        ?
+                        "+"
+                        :
+                        "−"
+                    }
+
+                    ₹${amount.toLocaleString(
+                        "en-IN"
+                    )}
+
+                </div>
+
+            `;
+
+
+            document
+                .getElementById(
+                    "recentTransactions"
+                )
+                .prepend(row);
+
+
+            this.reset();
+
+            closeModal();
+
+            showToast(
+                "Transaction added ✓"
+            );
+
+        }
+    );
+
+
+/* =========================================================
+   TRANSACTION SYNC
+========================================================= */
+
+function syncTransactions(){
+
+    document
+        .getElementById(
+            "allTransactions"
+        )
+        .innerHTML =
+
+        document
+            .getElementById(
+                "recentTransactions"
+            )
+            .innerHTML;
+
+}
+
+
+/* =========================================================
+   CHART ANIMATION
+========================================================= */
+
+function animateChart(){
+
+    const bars =
+        document.querySelectorAll(
+            ".bar"
+        );
+
+
+    bars.forEach(bar => {
+
+        const height =
+            Math.floor(
+                Math.random() * 45
+            ) + 40;
+
+
+        bar.style.height =
+            height + "%";
+
+    });
+
+
+    showToast(
+        "Chart updated"
+    );
+
+}
+
+
+/* =========================================================
+   NOTIFICATIONS
+========================================================= */
+
+function notification(){
+
+    showToast(
+        "You're all caught up"
+    );
+
+}
+
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+function showToast(message){
+
+    const toast =
+        document
+            .getElementById(
+                "toast"
+            );
+
+
+    toast.textContent =
+        message;
+
+
+    toast
+        .classList
+        .add("show");
+
+
+    setTimeout(
+        () => {
+
+            toast
+                .classList
+                .remove("show");
+
+        },
+        2400
+    );
+
+}
+
+
+/* =========================================================
+   CURSOR EFFECT
+========================================================= */
+
+const glow =
+    document
+        .getElementById(
+            "cursorGlow"
+        );
+
+
+document.addEventListener(
+    "mousemove",
+    event => {
+
+        glow.style.left =
+            event.clientX +
+            "px";
+
+        glow.style.top =
+            event.clientY +
+            "px";
+
+    }
+);
+
+
+syncTransactions();
+
+</script>
+
+</body>
+</html>
